@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { async } from "q";
 export default {
     data() {
         return {
@@ -40,10 +41,22 @@ export default {
     methods: {
         // 提交登录
         handleLoginSubmit() {
-            this.$refs.form.validate(valid => {
-                // v是表单验证的结果
+            this.$refs.form.validate(async valid => {
+                // valid是表单验证的结果
                 if (valid) {
                     // 提交登录接口
+
+                    var res = await this.$axios({
+                        url: "/accounts/login",
+                        methods: "POST",
+                        data: this.form
+                    });
+
+                    if(res.status === 200){
+                        this.$message.success('登录成功');
+
+                        // this.$router.push('/')
+                    }
                 }
             });
         }
