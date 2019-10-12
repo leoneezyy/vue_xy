@@ -9,9 +9,9 @@
                 <div
                     class="banner-image"
                     :style="`
-                background:url(${$axios.defaults.baseURL + item.url}) center center no-repeat;
-                background-size:contain contain;
-                `"
+                    background:url(${$axios.defaults.baseURL + item.url}) center center no-repeat;
+                    background-size:contain contain;
+                    `"
                 ></div>
             </el-carousel-item>
         </el-carousel>
@@ -26,16 +26,14 @@ export default {
         };
     },
 
-    mounted() {
-        // 请求轮播图数据
-        this.$axios({
-            url: "/scenics/banners"
-        }).then(res => {
-            const { data } = res.data;
-
-            // 赋值给banners
-            this.banners = data;
+    async mounted() {
+        // 返回一个promise,res就是axios的resolve的参数（也就是.then的回调函数的参数）
+        const res = await this.$axios({
+            url: '/scenics/banners'
         });
+
+        const {data} = res.data
+        this.banners = data
     }
 };
 </script>
