@@ -80,7 +80,7 @@ export default {
             }
         };
     },
-    methods: {
+    methods: {  
         // tab切换时触发
         handleSearchTab(item, index) {},
 
@@ -91,7 +91,20 @@ export default {
         queryDepartSearch(value, cb) {
             // 请求搜索建议城市
 
-            cb(arr);
+            this.$axios({
+                url: "/airs/city?name=" + value
+            }).then(res => {
+                // data是后台返回的城市数组,没有value属性
+                const { data } = res.data;
+                // 循环给每一项条件value属性
+                const newData = data.map(v => {
+                    v.value = v.name.replace("市", ""); // 乌鲁市齐市
+                    return v;
+                });
+
+                // 展示到下拉列表
+                cb(newData);
+            });
         },
 
         // 目标城市输入框获得焦点时触发
