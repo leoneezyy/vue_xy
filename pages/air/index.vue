@@ -46,7 +46,9 @@
 import SearchForm from "@/components/air/searchForm";
 
 export default {
-    SearchForm
+    components:{
+        SearchForm
+    }
 };
 </script>
 

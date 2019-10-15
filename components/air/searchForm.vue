@@ -80,7 +80,7 @@ export default {
             }
         };
     },
-    methods: {  
+    methods: {
         // tab切换时触发
         handleSearchTab(item, index) {},
 
@@ -89,8 +89,14 @@ export default {
         // cb:回调函数，必须要调用，调用时候必须要传递一个数组的参数，
         // 数组中的元素必须是一个对象，对象中必须要有value属性
         queryDepartSearch(value, cb) {
-            // 请求搜索建议城市
+            // 输入框为空时候不请求
+            if (!value) {
+                // 不显示下拉框
+                cb([]);
+                return;
+            }
 
+            // 请求搜索建议城市
             this.$axios({
                 url: "/airs/city?name=" + value
             }).then(res => {
@@ -112,7 +118,13 @@ export default {
         queryDestSearch(value, cb) {},
 
         // 出发城市下拉选择时触发
-        handleDepartSelect(item) {},
+        handleDepartSelect(item) {
+            // 获取表单需要的机票信息
+            console.log(item);
+
+            this.form.departCity = item.value;
+            this.form.departCode = item.sort;
+        },
 
         // 目标城市下拉选择时触发
         handleDestSelect(item) {},
@@ -124,7 +136,9 @@ export default {
         handleReverse() {},
 
         // 提交表单是触发
-        handleSubmit() {}
+        handleSubmit() {
+            console.info(this.form);
+        }
     },
     mounted() {}
 };
