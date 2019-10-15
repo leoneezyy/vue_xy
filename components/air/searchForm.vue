@@ -23,6 +23,7 @@
                     @select="handleDepartSelect"
                     class="el-autocomplete"
                     v-model="form.departCity"
+                    @blur="handleDepartBlur"
                 ></el-autocomplete>
             </el-form-item>
 
@@ -77,7 +78,10 @@ export default {
                 destCity: "", // 到达城市
                 destCode: "", // 到达城市代码
                 departDate: "" // 日期字符串
-            }
+            },
+
+            // 存放newData的城市的数组
+            cities: []
         };
     },
     methods: {
@@ -108,9 +112,21 @@ export default {
                     return v;
                 });
 
+                // 把newData赋值给data中cities
+                this.cities = newData;
+
                 // 展示到下拉列表
                 cb(newData);
             });
+        },
+
+        // 出发城市失去焦点时候默认选中第一个
+        handleDepartBlur() {
+            // 默认选中城市列表第一个
+            if (this.cities.length > 0) {
+                this.form.departCity = this.cities[0].value;
+                this.form.departCode = this.cities[0].sort;
+            }
         },
 
         // 目标城市输入框获得焦点时触发
@@ -120,8 +136,6 @@ export default {
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
             // 获取表单需要的机票信息
-            console.log(item);
-
             this.form.departCity = item.value;
             this.form.departCode = item.sort;
         },
