@@ -53,7 +53,7 @@ export default {
             form: {
                 username: "",
                 nickname: "",
-                captcha: "", // 验证码
+                captcha: "", //验证码
                 password: "",
                 checkPassword: "" // 确认密码
             },
@@ -78,14 +78,14 @@ export default {
     methods: {
         // 发送验证码
         async handleSendCaptcha() {
-            if (!this.from.username) {
+            if (!this.form.username) {
                 this.$message.error("手机号码不能为空");
                 return;
             }
 
             const res = await this.$axios({
                 url: "/captchas",
-                method: "POSt",
+                method: "POST",
                 data: {
                     tel: this.form.username // 手机号码
                 }
@@ -93,7 +93,7 @@ export default {
 
             const { code } = res.data;
             // 打印出手机的验证码
-            this.$message.success("当前的手机验证码是：${code}");
+            this.$message.success(`当前的手机验证码是：${code}`);
         },
 
         // 注册
@@ -109,7 +109,7 @@ export default {
                     const res = await this.$axios({
                         url: "/accounts/register",
                         method: "POST",
-                        data: "porps"
+                        data: props
                     });
 
                     if (res.status === 200) {
