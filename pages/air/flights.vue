@@ -10,7 +10,7 @@
                 <FlightsListHead />
 
                 <!-- 航班信息 -->
-                <!-- FlightsItem -->
+                <FlightsItem />
             </div>
 
             <!-- 侧边栏 -->
@@ -22,34 +22,35 @@
 </template>
 
 <script>
-
-import FlightsListHead from '@/components/air/flightsListHead'
-import FlightsItem from '@/components/air/flightsItem'
+import FlightsListHead from "@/components/air/flightsListHead";
+import FlightsItem from "@/components/air/flightsItem";
 
 export default {
-    data(){
-        return{
-
-        }
+    data() {
+        return {};
     },
 
-    components:{
+    components: {
         FlightsListHead,
         FlightsItem
+    },
+
+    mounted() {
+        // 请求机票列表数据
     }
 };
 </script>
 
 <style scoped lang="less">
-    .contianer{
-        width:1000px;
-        margin:20px auto;
-    }
-    .flights-content{
-        width:745px;
-        font-size:14px;
-    }
-    .aside{
-        width:240px;
-    } 
+.contianer {
+    width: 1000px;
+    margin: 20px auto;
+}
+.flights-content {
+    width: 745px;
+    font-size: 14px;
+}
+.aside {
+    width: 240px;
+}
 </style> 
