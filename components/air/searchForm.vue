@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import moment from 'moment';
+import moment from "moment";
 
 export default {
     data() {
@@ -75,7 +75,6 @@ export default {
                 { icon: "iconfont iconshuangxiang", name: "往返" }
             ],
             currentTab: 0,
-
             // 最终表单要提交的属性
             form: {
                 departCity: "", // 出发城市
@@ -91,7 +90,14 @@ export default {
     },
     methods: {
         // tab切换时触发
-        handleSearchTab(item, index) {},
+        handleSearchTab(item, index) {
+            if (index === 1) {
+                this.$alert("目前不支持往返", "提示", {
+                    confirmButtonText: "确定",
+                    type: "warning"
+                });
+            }
+        },
 
         // 出发城市输入框值发生变化时候会触发
         // value：输入框的值
@@ -111,15 +117,13 @@ export default {
             }).then(res => {
                 // data是后台返回的城市数组,没有value属性
                 const { data } = res.data;
-                // 循环给每一项条件value属性
+                // 循环给每一项添加value属性
                 const newData = data.map(v => {
                     v.value = v.name.replace("市", ""); // 乌鲁市齐市
                     return v;
                 });
-
                 // 把newData赋值给data中cities
                 this.cities = newData;
-
                 // 展示到下拉列表
                 cb(newData);
             });
@@ -129,32 +133,35 @@ export default {
         // type可能等于depart 或者 dest
         handleBlur(type) {
             // 默认选中城市列表第一个
-            // if (this.cities.length > 0) {
-            //     this.form.departCity = this.cities[0].value;
-            //     this.form.departCode = this.cities[0].sort;
+            // if(this.cities.length > 0){
+            //     if(type === "depart"){
+            //         this.form.departCity = this.cities[0].value;
+            //         this.form.departCode = this.cities[0].sort;
+            //     }
+            //     if(type === "dest"){
+            //         this.form.destCity = this.cities[0].value;
+            //         this.form.destCode = this.cities[0].sort;
+            //     }
             // }
-
             // 另一种写法
             if (this.cities.length === 0) return;
-
             this.form[type + "City"] = this.cities[0].value;
             this.form[type + "Code"] = this.cities[0].sort;
         },
 
         // 目标城市输入框获得焦点时触发
-        // value是选中的值，cb是回调函数，接收要展示的列表
+        // value 是选中的值，cb是回调函数，接收要展示的列表
         queryDestSearch(value, cb) {
-            // value是到达城市value，cb也是到达的输入框会
+            // value是到达城市value, cb也是到达的输入框回调函数
             this.queryDepartSearch(value, cb);
         },
 
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
-            // 获取表单需要的机票信息
+            // 获取到表单需要的机票信息
             this.form.departCity = item.value;
             this.form.departCode = item.sort;
         },
-
         // 目标城市下拉选择时触发
         handleDestSelect(item) {
             // 获取到表单需要的机票信息
@@ -164,49 +171,62 @@ export default {
 
         // 确认选择日期时触发
         handleDate(value) {
-            this.form.departDate = moment(value).format('YYYY-MM-DD')
+            this.form.departDate = moment(value).format(`YYYY-MM-DD`);
         },
 
         // 触发和目标城市切换时触发
-        handleReverse() {},
+        handleReverse() {
+            const { departCity, departCode, destCity, destCode } = this.form;
+
+            this.form.departCity = destCity;
+            this.form.departCode = destCode;
+
+            this.form.destCity = departCity;
+            this.form.destCode = departCode;
+        },
 
         // 提交表单是触发
         handleSubmit() {
+            console.info(this.form);
             // 自定义验证
             const rules = {
                 departCity: {
                     // message是错误的信息， value是对应表单中的值
-                    message: "请输入出发城市", value: this.form.departCity
+                    message: "请输入出发城市",
+                    value: this.form.departCity
                 },
                 destCity: {
-                    message: "请输入到达城市", value: this.form.destCity
+                    message: "请输入到达城市",
+                    value: this.form.destCity
                 },
                 departDate: {
-                    message: "请选择出发时间", value: this.form.departDate
+                    message: "请选择出发时间",
+                    value: this.form.departDate
                 }
-            }
+            };
             // 循环rules这个对象，判断对象属性的value如果是空的，打印出message错误信息
             let valid = true;
             Object.keys(rules).forEach(v => {
                 // 只要有一次验证不通过，后台验证不用再执行
-                if(!valid) return;
-                const {message, value } = rules[v];
+                if (!valid) return;
+                const { message, value } = rules[v];
                 // 对象属性的value如果是空的
-                if(!value){
-                    this.$message.error(message)
+                if (!value) {
+                    this.$message.error(message);
                     // 验证不通过
                     valid = false;
                 }
-            })
-            if(!valid) return;
+            });
+            if (!valid) return;
             this.$router.push({
                 path: "/air/flights",
                 query: this.form
-            })
-        },
+            });
+        }
+    },
     mounted() {}
+};
 </script>
-
 <style scoped lang="less">
 .search-form {
     border: 1px #ddd solid;
