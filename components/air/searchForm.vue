@@ -23,7 +23,7 @@
                     @select="handleDepartSelect"
                     class="el-autocomplete"
                     v-model="form.departCity"
-                    @blur="handleDepartBlur"
+                    @blur="handleBlur('depart')"
                 ></el-autocomplete>
             </el-form-item>
 
@@ -33,6 +33,8 @@
                     placeholder="请搜索到达城市"
                     @select="handleDestSelect"
                     class="el-autocomplete"
+                    v-model="form.destCity"
+                    @blur="handleBlur('dest')"
                 ></el-autocomplete>
             </el-form-item>
 
@@ -121,17 +123,27 @@ export default {
         },
 
         // 出发城市失去焦点时候默认选中第一个
-        handleDepartBlur() {
+        // type可能等于depart 或者 dest
+        handleBlur(type) {
             // 默认选中城市列表第一个
-            if (this.cities.length > 0) {
-                this.form.departCity = this.cities[0].value;
-                this.form.departCode = this.cities[0].sort;
-            }
+            // if (this.cities.length > 0) {
+            //     this.form.departCity = this.cities[0].value;
+            //     this.form.departCode = this.cities[0].sort;
+            // }
+
+            // 另一种写法
+            if (this.cities.length === 0) return;
+
+            this.form[type + "City"] = this.cities[0].value;
+            this.form[type + "Code"] = this.cities[0].sort;
         },
 
         // 目标城市输入框获得焦点时触发
         // value是选中的值，cb是回调函数，接收要展示的列表
-        queryDestSearch(value, cb) {},
+        queryDestSearch(value, cb) {
+            // value是到达城市value，cb也是到达的输入框会
+            this.queryDepartSearch(value, cb);
+        },
 
         // 出发城市下拉选择时触发
         handleDepartSelect(item) {
@@ -141,7 +153,11 @@ export default {
         },
 
         // 目标城市下拉选择时触发
-        handleDestSelect(item) {},
+        handleDestSelect(item) {
+            // 获取到表单需要的机票信息
+            this.form.destCity = item.value;
+            this.form.destCode = item.sort;
+        },
 
         // 确认选择日期时触发
         handleDate(value) {},
