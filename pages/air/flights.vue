@@ -10,7 +10,7 @@
                 <FlightsListHead />
 
                 <!-- 航班信息 -->
-                <FlightsItem v-for="(item,index) in flightsData.flights" :key="index" :item="item" />
+                <FlightsItem v-for="(item,index) in datalist" :key="index" :item="item" />
 
                 <el-pagination
                     @size-change="handleSizeChange"
@@ -41,6 +41,9 @@ export default {
             // 请求机票列表返回的总数据，包含了flights,info, options,total
             flightsData: {},
 
+            // 从flights总列表数据中切割出来数组列表
+            dataList: [],
+
             // 当前的页数
             pageIndex: 1,
             // 当前的条数
@@ -58,7 +61,18 @@ export default {
         handleSizeChange(val) {},
 
         // 页数切换时候触发，val是当前的页数
-        handleCurrentChange(val) {}
+        handleCurrentChange(val) {
+            // 修改当前的页数
+            this.pageIndex = val;
+            // 修改机票列表
+            // 0, 5
+            // 5，10
+            // 10,15
+            this.dataList = this.flightsData.flights.slice(
+                (this.pageIndex - 1) * this.pageSize,
+                this.pageIndex * this.pageSize
+            );
+        }
     },
 
     mounted() {
@@ -66,11 +80,14 @@ export default {
         this.$axios({
             url: "/airs",
             // params是axios的get的参数
-            parms: this.$route.query
+            params: this.$route.query
         }).then(res => {
             // 保存到机票的总数据
             this.flightsData = res.data;
             console.log(res);
+
+            // 第一页的数据
+            this.dataList = this.flightsData.flights.slice(0, this.pageSize);
         });
     }
 };
