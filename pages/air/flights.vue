@@ -47,6 +47,7 @@ export default {
         }).then(res => {
             // 保存到机票的总数据
             this.flightsData = res.data;
+            console.log(res);
         });
     }
 };
