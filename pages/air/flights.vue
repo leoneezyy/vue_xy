@@ -13,6 +13,7 @@
                 <FlightsItem v-for="(item,index) in datalist" :key="index" :item="item" />
 
                 <el-pagination
+                    v-if="flightsData.flights.length"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="pageIndex"
@@ -21,6 +22,12 @@
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="flightsData.total"
                 ></el-pagination>
+
+                <!-- loading等于false表示加载完毕之后才显示 -->
+                <div
+                    v-if="flightsData.flights.length === 0 && !loading"
+                    style="padding:50px; text-align:center"
+                >该航班信息暂无数据</div>
             </div>
 
             <!-- 侧边栏 -->
@@ -50,7 +57,9 @@ export default {
             // 当前的页数
             pageIndex: 1,
             // 当前的条数
-            pageSize: 5
+            pageSize: 5,
+            // 判断是否正在加载
+            loading: true
         };
     },
 
@@ -66,7 +75,7 @@ export default {
                 (this.pageIndex - 1) * this.pageSize,
                 this.pageIndex * this.pageSize
             );
-            return arr
+            return arr;
         }
     },
 
@@ -75,14 +84,12 @@ export default {
         handleSizeChange(val) {
             // 切换条数
             this.pageSize = val;
-            
         },
 
         // 页数切换时候触发，val是当前的页数
         handleCurrentChange(val) {
             // 修改当前的页数
             this.pageIndex = val;
-           
         }
     },
 
@@ -96,7 +103,8 @@ export default {
             // 保存到机票的总数据
             this.flightsData = res.data;
             console.log(res);
-
+            // 请求完毕
+            this.loading = false;
         });
     }
 };
